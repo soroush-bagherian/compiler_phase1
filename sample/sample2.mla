@@ -1,0 +1,27 @@
+entry class User:
+    private field  userName string ;
+    private field  password int ;
+    public function main() returns int:
+        print("welcome");
+        return 1;
+    end
+
+    public function setUserName(userName:string) returns int:
+            self.userName = userName;
+        return 0;
+    end
+
+    public function setPassword(password:int) returns int:
+       self.password = password ;
+       return 0;
+    end
+
+    public function getPassword() returns int:
+        return self.password;
+    end
+
+    public function getPassword() returns int:
+        return self.userName;
+    end
+end
+
