@@ -1,0 +1,33 @@
+entry class Sample:
+    public field  X int ;
+    public field  Y int ;
+    public function main() returns int:
+        return 1;
+    end
+
+    public function func1(param:int) returns int:
+        var res = 0;
+        if(param == 1) begin
+            res = res + 1;
+            end
+        elif(param == 2) begin
+            res = res + 2;
+            end
+        else
+           res = res + 3;
+
+        return 0;
+    end
+
+    public function func2(X:int) returns float:
+        var i = 0;
+       while(i < X) begin
+            i = i + 1 * 2 ;
+            if(i%10 == 0)begin
+            print(i);
+            break;
+            end
+       end
+    end
+end
+
