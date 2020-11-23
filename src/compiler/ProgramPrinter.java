@@ -15,17 +15,19 @@ public class ProgramPrinter implements MoolaListener{
 
     @Override
     public void exitProgram(MoolaParser.ProgramContext ctx) {
+
         System.out.println("}");
     }
 
     @Override
     public void enterClassDeclaration(MoolaParser.ClassDeclarationContext ctx) {
-        System.out.println("    main class: " + ctx.className.getText() + "{");
+        System.out.println("\tmain class: " + ctx.className.getText() + "{");
     }
 
     @Override
     public void exitClassDeclaration(MoolaParser.ClassDeclarationContext ctx) {
-        System.out.println("}");
+
+        System.out.println("\t}");
     }
 
     @Override
@@ -39,7 +41,9 @@ public class ProgramPrinter implements MoolaListener{
 
     @Override
     public void enterFieldDeclaration(MoolaParser.FieldDeclarationContext ctx) {
-        System.out.println("        field: " + ctx.fieldName.getText() +"/ type=" + ctx.fieldType.getText() + "/ access modifier=" + ctx.fieldAccessModifier.getText());
+        System.out.println("\t\tfield: " + ctx.fieldName.getText() +
+                "/ type=" + ctx.fieldType.getText() +
+                "/ access modifier=" + ctx.fieldAccessModifier.getText());
     }
 
     @Override
@@ -59,13 +63,13 @@ public class ProgramPrinter implements MoolaListener{
 
     @Override
     public void enterMethodDeclaration(MoolaParser.MethodDeclarationContext ctx) {
-        System.out.println("class method: " + ctx.methodName.getText() + "/ return type=" +
+        System.out.println("\t\tclass method: " + ctx.methodName.getText() + "/ return type=" +
                 "/ access modifier=" + ctx.methodAccessModifier.getText() + "{");
     }
 
     @Override
     public void exitMethodDeclaration(MoolaParser.MethodDeclarationContext ctx) {
-        System.out.println("}");
+        System.out.println("\t\t}");
     }
 
     @Override
@@ -120,7 +124,7 @@ public class ProgramPrinter implements MoolaListener{
 
     @Override
     public void enterStatementVarDef(MoolaParser.StatementVarDefContext ctx) {
-        System.out.println("var: " + ctx.i1.getText() );
+        System.out.println("\t\t\tvar: " + ctx.i1.getText() );
     }
 
     @Override
