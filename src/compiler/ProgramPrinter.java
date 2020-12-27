@@ -131,10 +131,12 @@ public class ProgramPrinter implements MoolaListener {
 
     @Override
     public void enterMethodDeclaration(MoolaParser.MethodDeclarationContext ctx) {
-//        System.out.println("\t\tclass method: " + ctx.methodName.getText() + "/ return type=" +
-//                "/ access modifier=" + ctx.methodAccessModifier.getText() + "{");
+        //System.out.println("\t\tclass method: " + ctx.methodName.getText() + "/ return type=" +
+        // "/ access modifier=" + ctx.methodAccessModifier.getText() + "{");
         //Method method = new Method(ctx.methodName.getText(), ctx.t.getText(), ctx.methodAccessModifier.getText());
         //classes.put("method_"+ctx.methodName.getText(), method);
+
+
 
         Method method = new Method();
         String varName;
@@ -144,6 +146,7 @@ public class ProgramPrinter implements MoolaListener {
 
         for (int j = 0; j < i; j++) {
             if (ctx.statement().get(j).getText().startsWith("var") ){
+
                 varName =method.getVarName(ctx.statement().get(j).getText());
                 Var v = new Var(varName);
                 method.methodSymbolTable.put("var_"+varName ,v);
@@ -183,7 +186,6 @@ public class ProgramPrinter implements MoolaListener {
 
     @Override
     public void enterOpenConditional(MoolaParser.OpenConditionalContext ctx) {
-
     }
 
     @Override
@@ -224,7 +226,8 @@ public class ProgramPrinter implements MoolaListener {
 
     @Override
     public void enterStatementBlock(MoolaParser.StatementBlockContext ctx) {
-        Block block = new Block();
+
+       //Block block = new Block();
         //method.put("block"+ctx.methodName.getText(), method);
 
     }
@@ -325,7 +328,6 @@ public class ProgramPrinter implements MoolaListener {
 
     @Override
     public void enterExpression(MoolaParser.ExpressionContext ctx) {
-
     }
 
     @Override

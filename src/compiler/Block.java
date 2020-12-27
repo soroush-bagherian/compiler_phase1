@@ -1,7 +1,12 @@
 package compiler;
 
-public class Block {
-    private final String var="block";
+import java.util.HashMap;
 
-    public Block() {}
+public class Block {
+    String name;
+    HashMap blockSymbolTable = new HashMap();
+
+    public Block(String name) {
+        this.name = name;
+    }
 }

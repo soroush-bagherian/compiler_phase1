@@ -17,6 +17,7 @@ entry class User:
     end
 
     public function getPassword() returns int:
+    var m =0;
         return self.password;
     end
 
@@ -24,7 +25,7 @@ entry class User:
         var  test = 0;
         var  test1 = 0;
 
-
+        {var k;}
         return self.userName;
     end
 end
@@ -49,6 +50,13 @@ entry class User3 inherits User2:
             var  test3;
             var  test13 = 0;
 
+            {
+                var a;
+            }
+
+             if(1=1){
+                var block;
+             }
 
             return self.userName;
         end
