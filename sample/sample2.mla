@@ -21,7 +21,35 @@ entry class User:
     end
 
     public function getPassword() returns int:
+        var  test = 0;
+        var  test1 = 0;
+
+
         return self.userName;
     end
 end
 
+entry class User2 :
+    private field  userFeild2 string ;
+
+        public function getPassword() returns int:
+            var  test4 = 0;
+            var  test15 = 0;
+
+
+            return self.userName;
+        end
+
+end
+
+entry class User3 inherits User2:
+    private field  userFeild3 string ;
+
+        public function getPassword() returns int:
+            var  test3;
+            var  test13 = 0;
+
+
+            return self.userName;
+        end
+end

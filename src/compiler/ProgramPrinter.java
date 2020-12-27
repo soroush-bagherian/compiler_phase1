@@ -6,28 +6,93 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-public class ProgramPrinter implements MoolaListener{
+import java.util.HashMap;
+
+public class ProgramPrinter implements MoolaListener {
+
+
     @Override
     public void enterProgram(MoolaParser.ProgramContext ctx) {
-        System.out.println("start program{");
+
+        int numberOfClassDec = ctx.classDeclaration().size();
+        Program program = new Program("program");
+        String className;
+
+
+        System.out.println("---------- " + program.name + " : " + ctx.start.getLine() + " ----------");
+
+        className = ctx.mainclass.classDeclaration().className.getText();
+        Classes b = new Classes(className, "inherits_");
+        program.programSymbolTable.put("mainClass_" + ctx.mainclass.classDeclaration().className.getText(), b);
+
+        for (int i = 0; i < numberOfClassDec; i++) {
+            className = ctx.classDeclaration().get(i).className.getText();
+            Classes c = new Classes(className, "inherits_");
+            program.programSymbolTable.put("class_" + ctx.classDeclaration().get(i).className.getText(), c);
+            System.out.print("Key = " + className + " | Value : ");
+            System.out.println(program.programSymbolTable.get("class_" + className));
+
+        }
+
 
     }
 
     @Override
     public void exitProgram(MoolaParser.ProgramContext ctx) {
 
-        System.out.println("}");
+        System.out.println("---------- END OF Program----------");
     }
 
     @Override
     public void enterClassDeclaration(MoolaParser.ClassDeclarationContext ctx) {
-        System.out.println("\tmain class: " + ctx.className.getText() + "{");
+
+        String fieldName;
+        String fieldType;
+        String accessModifier;
+        String methodName;
+        String methodType;
+        String methodaccessModifier;
+
+        int numberOfFeildDec = ctx.fieldDeclaration().size();
+        int numberOfMethodDec = ctx.methodDeclaration().size();
+        Classes c = new Classes(ctx.className.getText());
+        System.out.println("---------- " + ctx.className.getText() + " : " + ctx.start.getLine() + " ----------");
+
+        if (numberOfFeildDec > 0)
+        for (int i = 0; i < numberOfFeildDec; i++) {
+            fieldName = ctx.fieldDeclaration().get(i).fieldName.getText();
+            fieldType = ctx.fieldDeclaration().get(i).fieldType.getText();
+            accessModifier = ctx.fieldDeclaration().get(i).fieldAccessModifier.getText();
+
+            Field f = new Field(fieldName, fieldType, accessModifier);
+            c.classSymbolTable.put("field_" + fieldName, f);
+
+
+            System.out.print("Key = " + fieldName + " | Value : ");
+            System.out.println(c.classSymbolTable.get("field_" + fieldName));
+        }
+
+        if (numberOfMethodDec > 0)
+            for (int i = 0; i < numberOfMethodDec; i++) {
+
+                methodName = ctx.methodDeclaration().get(i).methodName.getText();
+                methodType = ctx.methodDeclaration().get(i).t.getText();
+                methodaccessModifier = ctx.methodDeclaration().get(i).methodAccessModifier.getText();
+
+                Method m = new Method(methodName, methodType, methodaccessModifier);
+                c.classSymbolTable.put("method_" + methodName , m);
+
+                System.out.print("Key = " + methodName + " | Value : ");
+                System.out.println(c.classSymbolTable.get("method_" + methodName));
+            }
+
+
     }
 
     @Override
     public void exitClassDeclaration(MoolaParser.ClassDeclarationContext ctx) {
 
-        System.out.println("\t}");
+        System.out.println("---------- END OF " + ctx.className.getText() + "----------");
     }
 
     @Override
@@ -41,9 +106,12 @@ public class ProgramPrinter implements MoolaListener{
 
     @Override
     public void enterFieldDeclaration(MoolaParser.FieldDeclarationContext ctx) {
-        System.out.println("\t\tfield: " + ctx.fieldName.getText() +
-                "/ type=" + ctx.fieldType.getText() +
-                "/ access modifier=" + ctx.fieldAccessModifier.getText());
+//        System.out.println("\t\tfield: " + ctx.fieldName.getText() +
+//                "/ type=" + ctx.fieldType.getText() +
+//                "/ access modifier=" + ctx.fieldAccessModifier.getText());
+        // Var field = new Var(ctx.fieldType.getText() , "field" );
+        //classes.put("field_"+ctx.fieldName.getText(), field);
+
     }
 
     @Override
@@ -63,13 +131,34 @@ public class ProgramPrinter implements MoolaListener{
 
     @Override
     public void enterMethodDeclaration(MoolaParser.MethodDeclarationContext ctx) {
-        System.out.println("\t\tclass method: " + ctx.methodName.getText() + "/ return type=" +
-                "/ access modifier=" + ctx.methodAccessModifier.getText() + "{");
+//        System.out.println("\t\tclass method: " + ctx.methodName.getText() + "/ return type=" +
+//                "/ access modifier=" + ctx.methodAccessModifier.getText() + "{");
+        //Method method = new Method(ctx.methodName.getText(), ctx.t.getText(), ctx.methodAccessModifier.getText());
+        //classes.put("method_"+ctx.methodName.getText(), method);
+
+        Method method = new Method();
+        String varName;
+        int i = ctx.statement().size();
+
+        System.out.println("---------- " + ctx.methodName.getText() + " : " + ctx.start.getLine() + " ----------");
+
+        for (int j = 0; j < i; j++) {
+            if (ctx.statement().get(j).getText().startsWith("var") ){
+                varName =method.getVarName(ctx.statement().get(j).getText());
+                Var v = new Var(varName);
+                method.methodSymbolTable.put("var_"+varName ,v);
+
+                System.out.print("Key = " + varName + " | Value : ");
+                System.out.println(method.methodSymbolTable.get("var_" + varName));
+            }
+
+        }
+
     }
 
     @Override
     public void exitMethodDeclaration(MoolaParser.MethodDeclarationContext ctx) {
-        System.out.println("\t\t}");
+        System.out.println("---------- END OF " + ctx.methodName.getText() + "----------");
     }
 
     @Override
@@ -124,7 +213,8 @@ public class ProgramPrinter implements MoolaListener{
 
     @Override
     public void enterStatementVarDef(MoolaParser.StatementVarDefContext ctx) {
-        System.out.println("\t\t\tvar: " + ctx.i1.getText() );
+
+       // System.out.println("\t\t\tvar11111111111111111111111111111111: " + ctx.i1.getText());
     }
 
     @Override
@@ -134,6 +224,8 @@ public class ProgramPrinter implements MoolaListener{
 
     @Override
     public void enterStatementBlock(MoolaParser.StatementBlockContext ctx) {
+        Block block = new Block();
+        //method.put("block"+ctx.methodName.getText(), method);
 
     }
 
@@ -440,4 +532,5 @@ public class ProgramPrinter implements MoolaListener{
     public void exitEveryRule(ParserRuleContext parserRuleContext) {
 
     }
+
 }
