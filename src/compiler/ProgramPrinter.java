@@ -6,31 +6,42 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import java.util.HashMap;
+import java.util.Stack;
 
 public class ProgramPrinter implements MoolaListener {
 
+    Stack<Scope> scopeStack = new Stack<Scope>();
+    Scope currentScope;
+    Scope parentScope;
 
     @Override
     public void enterProgram(MoolaParser.ProgramContext ctx) {
 
+        Scope programScope = new Scope();
+        programScope.name = "program";
+        programScope.isVisited=1;
+        currentScope = programScope;
+        parentScope = null;
+        scopeStack.push(programScope);
+
+
         int numberOfClassDec = ctx.classDeclaration().size();
-        Program program = new Program("program");
+
         String className;
 
 
-        System.out.println("---------- " + program.name + " : " + ctx.start.getLine() + " ----------");
+        System.out.println("---------- " + programScope.name + " : " + ctx.start.getLine() + " ----------");
 
         className = ctx.mainclass.classDeclaration().className.getText();
         Classes b = new Classes(className, "inherits_");
-        program.programSymbolTable.put("mainClass_" + ctx.mainclass.classDeclaration().className.getText(), b);
+        programScope.hashMap.put("mainClass_" + ctx.mainclass.classDeclaration().className.getText(), b);
 
         for (int i = 0; i < numberOfClassDec; i++) {
             className = ctx.classDeclaration().get(i).className.getText();
             Classes c = new Classes(className, "inherits_");
-            program.programSymbolTable.put("class_" + ctx.classDeclaration().get(i).className.getText(), c);
+            programScope.hashMap.put("class_" + ctx.classDeclaration().get(i).className.getText(), c);
             System.out.print("Key = " + className + " | Value : ");
-            System.out.println(program.programSymbolTable.get("class_" + className));
+            System.out.println(programScope.hashMap.get("class_" + className));
 
         }
 
@@ -53,9 +64,17 @@ public class ProgramPrinter implements MoolaListener {
         String methodType;
         String methodaccessModifier;
 
+        Scope classScope = new Scope();
+        classScope.name = "classScope_"+ctx.className.getText();
+
+        classScope.isVisited = 1;
+        currentScope = classScope;
+        parentScope = scopeStack.peek();
+        scopeStack.push(classScope);
+
+
         int numberOfFeildDec = ctx.fieldDeclaration().size();
         int numberOfMethodDec = ctx.methodDeclaration().size();
-        Classes c = new Classes(ctx.className.getText());
         System.out.println("---------- " + ctx.className.getText() + " : " + ctx.start.getLine() + " ----------");
 
         if (numberOfFeildDec > 0)
@@ -65,11 +84,11 @@ public class ProgramPrinter implements MoolaListener {
             accessModifier = ctx.fieldDeclaration().get(i).fieldAccessModifier.getText();
 
             Field f = new Field(fieldName, fieldType, accessModifier);
-            c.classSymbolTable.put("field_" + fieldName, f);
+            classScope.hashMap.put("field_" + fieldName, f);
 
 
             System.out.print("Key = " + fieldName + " | Value : ");
-            System.out.println(c.classSymbolTable.get("field_" + fieldName));
+            System.out.println(classScope.hashMap.get("field_" + fieldName));
         }
 
         if (numberOfMethodDec > 0)
@@ -80,18 +99,19 @@ public class ProgramPrinter implements MoolaListener {
                 methodaccessModifier = ctx.methodDeclaration().get(i).methodAccessModifier.getText();
 
                 Method m = new Method(methodName, methodType, methodaccessModifier);
-                c.classSymbolTable.put("method_" + methodName , m);
+                classScope.hashMap.put("method_" + methodName , m);
 
                 System.out.print("Key = " + methodName + " | Value : ");
-                System.out.println(c.classSymbolTable.get("method_" + methodName));
+                System.out.println(classScope.hashMap.get("method_" + methodName));
             }
-
 
     }
 
     @Override
     public void exitClassDeclaration(MoolaParser.ClassDeclarationContext ctx) {
 
+        scopeStack.pop();
+        currentScope = parentScope;
         System.out.println("---------- END OF " + ctx.className.getText() + "----------");
     }
 
@@ -131,36 +151,22 @@ public class ProgramPrinter implements MoolaListener {
 
     @Override
     public void enterMethodDeclaration(MoolaParser.MethodDeclarationContext ctx) {
-        //System.out.println("\t\tclass method: " + ctx.methodName.getText() + "/ return type=" +
-        // "/ access modifier=" + ctx.methodAccessModifier.getText() + "{");
-        //Method method = new Method(ctx.methodName.getText(), ctx.t.getText(), ctx.methodAccessModifier.getText());
-        //classes.put("method_"+ctx.methodName.getText(), method);
 
-
-
-        Method method = new Method();
-        String varName;
-        int i = ctx.statement().size();
-
+        Scope methodScope = new Scope();
+        methodScope.name =  ctx.methodName.getText();
+        currentScope = methodScope;
+        parentScope = scopeStack.peek();
+        scopeStack.push(methodScope);
         System.out.println("---------- " + ctx.methodName.getText() + " : " + ctx.start.getLine() + " ----------");
-
-        for (int j = 0; j < i; j++) {
-            if (ctx.statement().get(j).getText().startsWith("var") ){
-
-                varName =method.getVarName(ctx.statement().get(j).getText());
-                Var v = new Var(varName);
-                method.methodSymbolTable.put("var_"+varName ,v);
-
-                System.out.print("Key = " + varName + " | Value : ");
-                System.out.println(method.methodSymbolTable.get("var_" + varName));
-            }
-
-        }
 
     }
 
     @Override
     public void exitMethodDeclaration(MoolaParser.MethodDeclarationContext ctx) {
+
+        scopeStack.pop();
+        currentScope = parentScope;
+
         System.out.println("---------- END OF " + ctx.methodName.getText() + "----------");
     }
 
@@ -186,6 +192,7 @@ public class ProgramPrinter implements MoolaListener {
 
     @Override
     public void enterOpenConditional(MoolaParser.OpenConditionalContext ctx) {
+
     }
 
     @Override
@@ -195,12 +202,20 @@ public class ProgramPrinter implements MoolaListener {
 
     @Override
     public void enterOpenStatement(MoolaParser.OpenStatementContext ctx) {
+        Scope ifScope = new Scope();
+        ifScope.name =  "if";
+        currentScope = ifScope;
+        parentScope = scopeStack.peek();
+        scopeStack.push(ifScope);
+        System.out.println("----------  if : " + ctx.start.getLine() + " ----------");
 
     }
 
     @Override
     public void exitOpenStatement(MoolaParser.OpenStatementContext ctx) {
-
+        scopeStack.pop();
+        currentScope = parentScope;
+        System.out.println("---------- END OF  if ----------");
     }
 
     @Override
@@ -216,7 +231,12 @@ public class ProgramPrinter implements MoolaListener {
     @Override
     public void enterStatementVarDef(MoolaParser.StatementVarDefContext ctx) {
 
-       // System.out.println("\t\t\tvar11111111111111111111111111111111: " + ctx.i1.getText());
+        Var var = new Var(ctx.i1.getText());
+        currentScope.hashMap.put("var_"+ctx.i1.getText() , var);
+
+        System.out.print("Key = " + var.getName() + " | Value : ");
+        System.out.println(currentScope.hashMap.get("var_" + var.getName()));
+
     }
 
     @Override
@@ -226,9 +246,6 @@ public class ProgramPrinter implements MoolaListener {
 
     @Override
     public void enterStatementBlock(MoolaParser.StatementBlockContext ctx) {
-
-       //Block block = new Block();
-        //method.put("block"+ctx.methodName.getText(), method);
 
     }
 
@@ -259,6 +276,7 @@ public class ProgramPrinter implements MoolaListener {
 
     @Override
     public void enterStatementReturn(MoolaParser.StatementReturnContext ctx) {
+
     }
 
     @Override
@@ -268,12 +286,20 @@ public class ProgramPrinter implements MoolaListener {
 
     @Override
     public void enterStatementClosedLoop(MoolaParser.StatementClosedLoopContext ctx) {
+        Scope whileScope = new Scope();
+        whileScope.name =  "while";
+        currentScope = whileScope;
+        parentScope = scopeStack.peek();
+        scopeStack.push(whileScope);
+        System.out.println("----------  while : " + ctx.start.getLine() + " ----------");
 
     }
 
     @Override
     public void exitStatementClosedLoop(MoolaParser.StatementClosedLoopContext ctx) {
-
+        scopeStack.pop();
+        currentScope = parentScope;
+        System.out.println("---------- END OF  while ----------");
     }
 
     @Override

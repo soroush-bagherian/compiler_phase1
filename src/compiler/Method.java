@@ -6,11 +6,7 @@ public class Method {
     private String name;
     private String returnType;
     private String accessModifier = "public";
-    HashMap methodSymbolTable = new HashMap();
 
-
-    public Method() {
-    }
 
     public Method(String name, String returnType, String accessModifier) {
         this.name = name;
@@ -18,31 +14,7 @@ public class Method {
         this.accessModifier = accessModifier;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getReturnType() {
-        return returnType;
-    }
-
-    public void setReturnType(String returnType) {
-        this.returnType = returnType;
-    }
-
-    public String getAccessModifier() {
-        return accessModifier;
-    }
-
-    public void setAccessModifier(String accessModifier) {
-        this.accessModifier = accessModifier;
-    }
     public String getVarName(String var){
-
         int a=0;
         int b=var.length();
         String str ="";

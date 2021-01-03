@@ -6,12 +6,12 @@ entry class User:
         return 1;
     end
 
-    public function setUserName(userName:string) returns int:
+    public function setUserName(userName: string) returns int:
             self.userName = userName;
         return 0;
     end
 
-    public function setPassword(password:int) returns int:
+    public function setPassword(password: int) returns int:
        self.password = password ;
        return 0;
     end
@@ -21,11 +21,13 @@ entry class User:
         return self.password;
     end
 
-    public function getPassword() returns int:
+    public function getPassword22222() returns int:
         var  test = 0;
         var  test1 = 0;
 
-        {var k;}
+        begin
+            var k888888888;
+        end
         return self.userName;
     end
 end
@@ -33,7 +35,7 @@ end
 entry class User2 :
     private field  userFeild2 string ;
 
-        public function getPassword() returns int:
+        public function mameSexy() returns int:
             var  test4 = 0;
             var  test15 = 0;
 
@@ -46,17 +48,27 @@ end
 entry class User3 inherits User2:
     private field  userFeild3 string ;
 
-        public function getPassword() returns int:
+        public function mathodTestU2(name: string) returns int:
             var  test3;
             var  test13 = 0;
 
-            {
-                var a;
-            }
+            while(a <> 0) begin
+            var mmmmmmmmmmm ;
+                a = a - 1;
+                while( a > 2 ) begin
+                var sss;
+                a = a + 2;
+                break;
+                end
+            end
 
-             if(1=1){
-                var block;
-             }
+            if( a > 2 ) begin
+                if( a > 2 ) begin
+
+                 end
+            end
+
+
 
             return self.userName;
         end
