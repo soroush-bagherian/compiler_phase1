@@ -1,75 +1,40 @@
-entry class User:
-    private field  userName string ;
-    private field  password int ;
-    public function main() returns int:
-        print("welcome");
-        return 1;
+entry class MainTest :
+    public field x,y int[];
+    public function xe() returns int:
+    x = new int[4];
+            x[2] = 4;
+            x[0] = 3;
+            x[1] = 9;
+            x[3] = 13;
+            print(x);
+            y = x;
+            print(y);
+            print("hojjat");
+            var k = "dj";
+            print(k);
+            return 1;
     end
-
-    public function setUserName(userName: string) returns int:
-            self.userName = userName;
+    public function main() returns int:
+    if (2==1)begin
+        var t = new MainTest();
+        var a = t.xe();
+        print(t.x);
+        var pp = xe();
+        print(x);
+     end
+     else print(4);
         return 0;
     end
 
-    public function setPassword(password: int) returns int:
-       self.password = password ;
-       return 0;
-    end
-
-    public function getPassword() returns int:
-    var m =0;
-        return self.password;
-    end
-
-    public function getPassword22222() returns int:
-        var  test = 0;
-        var  test1 = 0;
-
-        begin
-            var k888888888;
-        end
-        return self.userName;
-    end
 end
 
-entry class User2 :
-    private field  userFeild2 string ;
 
-        public function mameSexy() returns int:
-            var  test4 = 0;
-            var  test15 = 0;
+class p :
+public field t int;
+    public function r()returns int:
+        print(2);
+        t = 3;
+    return 0;
+    end
 
-
-            return self.userName;
-        end
-
-end
-
-entry class User3 inherits User2:
-    private field  userFeild3 string ;
-
-        public function mathodTestU2(name: string) returns int:
-            var  test3;
-            var  test13 = 0;
-
-            while(a <> 0) begin
-            var mmmmmmmmmmm ;
-                a = a - 1;
-                while( a > 2 ) begin
-                var sss;
-                a = a + 2;
-                break;
-                end
-            end
-
-            if( a > 2 ) begin
-                if( a > 2 ) begin
-
-                 end
-            end
-
-
-
-            return self.userName;
-        end
 end
